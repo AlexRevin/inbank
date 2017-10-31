@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe User do
 
   before(:each) { @user = User.new(email: 'user@example.com') }

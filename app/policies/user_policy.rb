@@ -1,4 +1,6 @@
-class UserPolicy
+# frozen_string_literal: true
+
+class UserPolicy < ApplicationPolicy
   attr_reader :current_user, :model
 
   def initialize(current_user, model)
@@ -11,7 +13,7 @@ class UserPolicy
   end
 
   def show?
-    @current_user.admin? or @current_user == @user
+    @current_user.admin? || @current_user == @user
   end
 
   def update?

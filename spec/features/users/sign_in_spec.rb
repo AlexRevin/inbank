@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Feature: Sign in
 #   As a user
 #   I want to sign in
@@ -45,5 +47,4 @@ feature 'Sign in', :devise do
     signin(user.email, 'invalidpass')
     expect(page).to have_content I18n.t 'devise.failure.invalid', authentication_keys: 'email'
   end
-
 end
