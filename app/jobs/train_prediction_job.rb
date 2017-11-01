@@ -1,14 +1,16 @@
 class TrainPredictionJob < ApplicationJob
-  queue_as :default
+  queue_as :prediction
 
-  def perform(*args)
-    currency_pairs = Rails.configuration.settings['enabled_currencies'].repeated_combination(2).to_a
+  def perform(pairs: nil)
+    currency_pairs = pairs || Rails.configuration.settings['enabled_currencies'].repeated_combination(2).to_a
     days = Rails.configuration.settings['predict_days']
     currency_pairs.each do |pair|
       (source, target) = pair
       historicals = HistoricalRate.for(source).target(target).all
-      linear(data: historicals, days: days, currency_pair: pair)
-      gradient(data: historicals, days: days, currency_pair: pair)
+      if historicals.present?
+        linear(data: historicals, days: days, currency_pair: pair)
+        gradient(data: historicals, days: days, currency_pair: pair)
+      end
     end
   end
 
@@ -27,7 +29,7 @@ class TrainPredictionJob < ApplicationJob
   def gradient(data:, days:, currency_pair:)
     linear_regression = LinearRegression.new
     linear_regression.from_historical_array data
-    linear_regression.train_gradient_descent(0.0005, 2000, true)
+    linear_regression.train_gradient_descent(0.0005, 1000, true)
     Prediction.from_predictor(
       predictor: linear_regression,
       type: :gradient,
