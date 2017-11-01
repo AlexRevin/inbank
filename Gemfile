@@ -5,14 +5,19 @@ git_source(:github) do |repo_name|
 end
 ruby '2.4.2'
 gem 'coffee-rails', '~> 4.2'
+gem 'daemons'
+gem 'delayed_job_active_record'
+gem 'httparty'
 gem 'jbuilder', '~> 2.5'
 gem 'puma', '~> 3.7'
 gem 'rails', '~> 5.1.4'
+gem 'ruby_linear_regression'
 gem 'sass-rails', '~> 5.0'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
-gem 'httparty'
+
 group :development, :test do
+  gem 'awesome_print'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'

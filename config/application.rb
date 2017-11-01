@@ -10,7 +10,6 @@ Bundler.require(*Rails.groups)
 
 module Inbank
   class Application < Rails::Application
-
     config.generators do |g|
       g.test_framework :rspec,
         fixtures: true,
@@ -21,6 +20,14 @@ module Inbank
         request_specs: false
       g.fixture_replacement :factory_girl, dir: "spec/factories"
     end
+
+    %w[clients predictos].each do |folder|
+      config.autoload_paths << Rails.root.join('app', folder)
+    end
+    
+    config.active_job.queue_adapter = :delayed_job
+
+    config.settings = config_for(:settings)
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1

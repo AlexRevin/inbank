@@ -1,0 +1,29 @@
+--- 
+default: &default
+  enabled_currencies:
+    - AUD 
+    - BGN 
+    - BRL 
+    - CAD 
+    - CHF 
+    - CNY 
+    - CZK 
+    - DKK 
+    - EUR 
+    - GBP 
+    - HKD 
+    - HRK 
+    - HUF 
+    - IDR 
+    - ILS 
+    - INR 
+    - USD
+  default_currency: USD
+  predict_days: 175 # 25 weeks
+  historical_days: 175 # 25 weeks
+development:
+  <<: *default
+production:
+  <<: *default
+test:
+  <<: *default
