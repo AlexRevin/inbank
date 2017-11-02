@@ -22,7 +22,7 @@ class HistoricalRate < CurrencyBase
     response[:rates].each_pair do |code, value|
       next unless Rails.configuration.settings['enabled_currencies'].include?(code)
       next unless (target = Currency.by_code(code).last).present?
-      HistoricalRate.create(source_currency: source, target_currency: target, rate: value * 1000, date: Date.parse(response[:date]))
+      HistoricalRate.create(source_currency: source, target_currency: target, rate: value, date: Date.parse(response[:date]))
     end
   end
 end

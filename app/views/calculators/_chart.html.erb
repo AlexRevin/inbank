@@ -1,0 +1,8 @@
+<% if @result.present? -%>
+  <h3>Prediction</h3>
+  <%= line_chart @result %>
+  <h3>Historical</h3>
+  <%= line_chart @historical_result %>
+<% else %>
+  <h3>Select amount and currencies</h3>
+<% end %>

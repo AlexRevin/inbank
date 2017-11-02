@@ -25,7 +25,7 @@ class Prediction < CurrencyBase
     ]
 
     (Date.today..future_date).each do |date|
-      rate = predictor.predict(date: date)
+      rate = predictor.predict(date: date) / 100_000_000.to_f
       existing = Prediction.with_algo(type).on(date).where(source_currency: source, target_currency: target).last
       if existing.present?
         existing.update_attributes(rate: rate) if existing[:rate] != rate

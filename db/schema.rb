@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20171031220533) do
   create_table "historical_rates", force: :cascade do |t|
     t.integer "source_currency"
     t.integer "target_currency"
-    t.integer "rate"
+    t.float "rate"
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 20171031220533) do
   create_table "predictions", force: :cascade do |t|
     t.integer "source_currency"
     t.integer "target_currency"
-    t.integer "rate"
+    t.float "rate"
     t.date "date"
     t.integer "algo"
     t.datetime "created_at", null: false

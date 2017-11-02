@@ -20,6 +20,7 @@ class FixerIo
   def for_range
     res = []
     (@from..@to).each do |date|
+      next if date.saturday? || date.sunday?
       res << for_day(date.strftime('%F')).symbolize_keys
     end
     res
