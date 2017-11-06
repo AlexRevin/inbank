@@ -5,7 +5,7 @@ class TrainPredictionJob < ApplicationJob
 
   def perform(pairs: nil)
     currency_pairs = pairs || Rails.configuration.settings['enabled_currencies']
-                                   .repeated_combination(2).to_a
+                                   .permutation(2).to_a
     days = Rails.configuration.settings['predict_days']
     currency_pairs.each do |pair|
       (source, target) = pair

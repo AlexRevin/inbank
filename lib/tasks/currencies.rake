@@ -11,11 +11,16 @@ namespace :currencies do
   end
 
   desc "Repair historical data"
-  task repair_historicals: :environment do
+  task :repair_historicals, [:source, :target] => [:environment] do |t, args|
     from = Date.today - Rails.configuration.settings['predict_days'].days
     dates = (from..Date.today).to_a.delete_if {|date| date.sunday? || date.saturday?}.map(&:strftime)
-    Rails.configuration.settings['enabled_currencies']
-    .repeated_combination(2).to_a.each do |pair|
+    if args[:source].present? && args[:target].present?
+      pairs = [ [args[:source], args[:target]] ]
+    else
+      pairs = Rails.configuration.settings['enabled_currencies']
+                                 .permutation(2).to_a
+    end
+    pairs.each do |pair|
       next if pair[0] == pair[1]
       p "checking #{pair}"
       scope = HistoricalRate.on(dates).for(pair[0]).target(pair[1]).order("date desc")

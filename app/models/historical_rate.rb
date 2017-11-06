@@ -26,7 +26,7 @@ class HistoricalRate < CurrencyBase
       next unless (target = Currency.by_code(code).last).present?
       next if HistoricalRate.on(response[:date]).for(response[:base])
                             .target(target[:code])
-                            .last.present?
+                            .present?
       HistoricalRate.create(source_currency: source,
                             target_currency: target,
                             rate: value,
