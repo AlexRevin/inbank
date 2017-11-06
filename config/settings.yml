@@ -19,7 +19,7 @@ default: &default
     - INR 
     - USD
   default_currency: USD
-  predict_days: 175 # 25 weeks
+  predict_days: 1750 # 250 weeks
   historical_days: 175 # 25 weeks
 development:
   <<: *default

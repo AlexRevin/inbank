@@ -52,13 +52,15 @@ class CalculatorsController < ApplicationController
 
   def weekly_result(predictions)
     predictions.each_with_object({}) do |n, sum|
-      sum[n.date.strftime('%F')] = (n.rate * params[:amount].to_i).round(2)
+      amt = params[:amount].present? ? params[:amount].to_i : 10_000
+      sum[n.date.strftime('%F')] = (n.rate * amt).ceil_to(2)
     end
   end
 
   def weekly_historicals(historicals)
     historicals.each_with_object({}) do |n, sum|
-      sum[n.date.strftime('%F')] = (n.rate * params[:amount].to_i).round(2)
+      amt = params[:amount].present? ? params[:amount].to_i : 10_000
+      sum[n.date.strftime('%F')] = (n.rate * amt).ceil_to(2)
     end
   end
 

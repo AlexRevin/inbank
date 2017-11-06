@@ -8,19 +8,19 @@
   <div class="form-row">
     <div class="form-group">
       <%= label_tag :source, "Source currency" %>
-        <%= select_tag(:source, options_for_select(@currencies, params[:source]), {class: "form-control"}) %>
+        <%= select_tag(:source, options_for_select(@currencies, params[:source] || @currencies[0][1]), {class: "form-control"}) %>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group">
       <%= label_tag :target, "Target currency" %>
-        <%= select_tag(:target, options_for_select(@currencies, params[:target]), {class: "form-control"}) %>
+        <%= select_tag(:target, options_for_select(@currencies, params[:target] || @currencies[1][1]), {class: "form-control"}) %>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group">
       <%= label_tag :wait_time, "Weeks" %>
-        <%= select_tag(:weeks, options_for_select((1..25).to_a.map{|i| [i, i]}, params[:weeks]), {class: "form-control"}) %>
+        <%= select_tag(:weeks, options_for_select((1..Rails.configuration.settings['predict_days']/7).to_a.map{|i| [i, i]}, params[:weeks] || 10), {class: "form-control"}) %>
     </div>
   </div>
   <div class="form-row">
