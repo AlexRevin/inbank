@@ -1,21 +1,66 @@
 AllCops:
-  Include:
-    - '**/Gemfile'
-    - '**/Rakefile'
   Exclude:
-   - 'bin/*'
-   - 'db/seeds.rb'
-   - 'db/schema.rb'
-   - 'vendor/bundle/**/*'
+    - config.ru
+    - db/**/*
+    - bin/**/*
+    - config/**/*
+    - script/**/*
+    - Rakefile
+    - spec/factories/**/*
+    - schema.rb
+    - Vagrantfile
+    - lib/tasks/*
+    - Gemfile
+    - Guardfile
+    - app/views/**/*.jbuilder
+    - spec/**/*
+
 Documentation:
   Enabled: false
-Metrics/LineLength:
+
+StringLiterals:
   Enabled: false
-Style/StringLiterals:
+
+DoubleNegation:
   Enabled: false
-Layout/EmptyLineBetweenDefs:
+
+Eval:
   Enabled: false
-Layout/EmptyLinesAroundBlockBody:
+
+RescueModifier:
   Enabled: false
-Style/MixinUsage:
+
+LineLength:
+  Max: 80
+
+MethodLength:
+  Max: 15
+
+# deprecated
+GuardClause:
+  Enabled: false
+
+Next:
+  Enabled: false
+
+CyclomaticComplexity:
+  Max: 7
+
+Metrics/PerceivedComplexity:
+  Max: 21
+
+Metrics/AbcSize:
+  Max: 40
+
+AndOr:
+  Enabled: false
+
+# This is here because it forces to make
+# Grape::API #headers to have ugly indentation
+AlignHash:
+  Enabled: false
+
+# I mean, come on, why is there a language
+# construct when you can't use it!
+LambdaCall:
   Enabled: false

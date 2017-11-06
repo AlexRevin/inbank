@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class TrainPredictionJob < ApplicationJob
   queue_as :prediction
 
   def perform(pairs: nil)
-    currency_pairs = pairs || Rails.configuration.settings['enabled_currencies'].repeated_combination(2).to_a
+    currency_pairs = pairs || Rails.configuration.settings['enabled_currencies']
+                                   .repeated_combination(2).to_a
     days = Rails.configuration.settings['predict_days']
     currency_pairs.each do |pair|
       (source, target) = pair
@@ -15,6 +18,7 @@ class TrainPredictionJob < ApplicationJob
   end
 
   def linear(data:, days:, currency_pair:)
+    p "training #{currency_pair} for #{days} days with linear"
     linear_regression = LinearRegression.new
     linear_regression.from_historical_array data
     linear_regression.train_normal_equation
@@ -27,6 +31,7 @@ class TrainPredictionJob < ApplicationJob
   end
 
   def gradient(data:, days:, currency_pair:)
+    p "training #{currency_pair} for #{days} days with gradient"
     linear_regression = LinearRegression.new
     linear_regression.from_historical_array data
     linear_regression.train_gradient_descent(0.0005, 1000, true)

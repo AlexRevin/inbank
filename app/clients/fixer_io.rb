@@ -11,10 +11,10 @@ class FixerIo
     @from = from
     @to = to
     @base_currency = if base.present?
-      Currency.by_code(base).last
-    else
-      Currency.default.last
-    end
+                       Currency.by_code(base).last
+                     else
+                       Currency.default.last
+                     end
   end
 
   def for_range
@@ -30,6 +30,9 @@ class FixerIo
 
   def for_day(day)
     p "  day: #{day}"
-    self.class.get("/#{day}", query: { base: @base_currency[:code] }).parsed_response
+    self.class.get("/#{day}",
+                   query: {
+                     base: @base_currency[:code]
+                   }).parsed_response
   end
 end

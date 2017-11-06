@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171031220533) do
+ActiveRecord::Schema.define(version: 20171106191218) do
 
   create_table "currencies", force: :cascade do |t|
     t.string "code"
@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(version: 20171031220533) do
     t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_historical_rates_on_date"
+    t.index ["source_currency", "target_currency"], name: "index_historical_rates_on_source_currency_and_target_currency"
   end
 
   create_table "predictions", force: :cascade do |t|
@@ -52,6 +54,9 @@ ActiveRecord::Schema.define(version: 20171031220533) do
     t.integer "algo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["algo"], name: "index_predictions_on_algo"
+    t.index ["date"], name: "index_predictions_on_date"
+    t.index ["source_currency", "target_currency"], name: "index_predictions_on_source_currency_and_target_currency"
   end
 
   create_table "users", force: :cascade do |t|

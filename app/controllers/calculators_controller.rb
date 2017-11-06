@@ -5,51 +5,68 @@ class CalculatorsController < ApplicationController
   before_action :load_currencies
 
   def create
-    @source = Currency.find(params[:source])
-    @target = Currency.find(params[:target])
-
     @predictions = Prediction
-      .for(@source[:code])
-      .target(@target[:code])
-      .between(Date.today, Date.today + params[:weeks].to_i.weeks)
-      .with_algo(params[:algo])
-      .all.to_a
+                   .where(source_currency: params[:source],
+                          target_currency: params[:target])
+                   .on(prediction_dates(params[:weeks]))
+                   .with_algo(params[:algo]).all.to_a
 
     @historicals = HistoricalRate
-      .for(@source[:code])
-      .target(@target[:code])
-      .between(Date.today - params[:weeks].to_i.weeks - 1.days, Date.today)
-      .order("date desc")
-      .all.to_a
+                   .where(source_currency: params[:source],
+                          target_currency: params[:target])
+                   .on(historical_dates(params[:weeks]))
+                   .order("date desc").all.to_a
 
-    pi = 0
-    ph = 0
-
-    @result = @predictions.reduce({}) do |sum, n|
-      if ((pi += 1) % 7).zero?
-        sum[n.date.strftime('%F')] = (n.rate * params[:amount].to_i).round(2)
-      end
-      sum
-    end
-
-    @historical_result = @historicals.reduce({}) do |sum, n|
-      if ((ph += 1) % 5).zero?
-        sum[n.date.strftime('%F')] = (n.rate * params[:amount].to_i).round(2)
-      end
-      sum
-    end
+    @result = weekly_result @predictions
+    @historical_result = weekly_historicals @historicals
     render :index
   end
 
-  def index
-  end
+  def index; end
 
   private
+
+  def prediction_dates(weeks)
+    final_date = Date.today + weeks.to_i.weeks
+    dates = []
+    date = Date.today
+    while (date += 1.week) <= final_date
+      dates.push date
+    end
+    dates
+  end
+
+  def historical_dates(weeks)
+    final_date = Date.today - weeks.to_i.weeks
+    # no historicals on weekends
+    if final_date.sunday? || final_date.saturday?
+      final_date -= 1.day until final_date.friday?
+    end
+    dates = []
+    date = Date.today
+    while (date -= 1.week) >= final_date
+      dates.push date
+    end
+    dates
+  end
+
+  def weekly_result(predictions)
+    predictions.each_with_object({}) do |n, sum|
+      sum[n.date.strftime('%F')] = (n.rate * params[:amount].to_i).round(2)
+    end
+  end
+
+  def weekly_historicals(historicals)
+    historicals.each_with_object({}) do |n, sum|
+      sum[n.date.strftime('%F')] = (n.rate * params[:amount].to_i).round(2)
+    end
+  end
+
   def secure_params
     params.permit(:source, :target, :amount, :weeks, :algo)
   end
 
   def load_currencies
-    @currencies = Currency.all.map{ |c| [c[:code], c[:id]]}
+    @currencies = Currency.all.map { |c| [c[:code], c[:id]] }
   end
 end
