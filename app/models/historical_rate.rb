@@ -18,15 +18,15 @@ class HistoricalRate < CurrencyBase
 
   def self.from_client_response(response)
     return false unless response.present? && response[:base].present?
-    return false if HistoricalRate.on(response[:date])
-                                  .for(response[:base])
-                                  .last.present?
     source = Currency.by_code(response[:base]).last
     return false unless source.present?
     response[:rates].each_pair do |code, value|
       next unless Rails.configuration.settings['enabled_currencies']
                        .include?(code)
       next unless (target = Currency.by_code(code).last).present?
+      next if HistoricalRate.on(response[:date]).for(response[:base])
+                            .target(target[:code])
+                            .last.present?
       HistoricalRate.create(source_currency: source,
                             target_currency: target,
                             rate: value,
