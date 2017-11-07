@@ -1,0 +1,37 @@
+<%= form_tag dynamic_calculators_path do %>
+  <div class="form-row">
+    <div class="form-group">
+      <%= label_tag :amount %>
+        <%= text_field_tag(:amount, params[:amount], {class: "form-control", placeholder: "10000"} ) %>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <%= label_tag :source, "Source currency" %>
+        <%= select_tag(:source, options_for_select(@currencies, params[:source] || @currencies[0][1]), {class: "form-control"}) %>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <%= label_tag :target, "Target currency" %>
+        <%= select_tag(:target, options_for_select(@currencies, params[:target] || @currencies[1][1]), {class: "form-control"}) %>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <%= label_tag :wait_time, "Weeks" %>
+        <%= select_tag(:weeks, options_for_select((1..Rails.configuration.settings['predict_days']/7).to_a.map{|i| [i, i]}, params[:weeks] || 10), {class: "form-control"}) %>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <%= label_tag :wait_time, "Algorythm" %>
+        <%= select_tag(:algo, options_for_select([["Linear", :linear], ["Gradient", :gradient]], params[:algo]), {class: "form-control"}) %>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">Find best time</button>
+    </div>
+  </div>
+<% end %>

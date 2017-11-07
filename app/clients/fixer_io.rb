@@ -17,35 +17,43 @@ class FixerIo
                      end
   end
 
-  def for_range
+  def for_dates(dates:)
     res = []
     retries = {}
-    arr = (@from..@to).to_a
-    while arr.present?
-      date = arr.shift
+    while dates.present?
+      date = dates.shift
       next if date.saturday? || date.sunday?
-      (code, resp) = for_day(date.strftime('%F'))
-      if code == 200
-        res << resp
+      raw = for_day(date.strftime('%F'))
+      if raw.present? && raw[:code] == 200
+        res << raw[:resp]
       else
         retries[date] ||= 0
-        arr.unshift date if (retires[date] += 1) <= 3
+        dates.unshift date if (retries[date] += 1) <= 3
       end
     end
     res
   end
 
+  def for_range
+    arr = (@from..@to).to_a
+    for_dates(dates: arr)
+  end
+
   def for_day(day)
     p "  day: #{day}, currency: #{@base_currency[:code]}"
-    response = self.class.get("/#{day}",
-                              query: {
-                                base: @base_currency[:code]
-                              })
-    if response.code == 200
-      return [200, response.parsed_response.symbolize_keys]
-    else
-      p "request error, code: #{code}"
-      return [response.code, nil]
+    Rails.cache.fetch("/historicals/#{day}/#{@base_currency[:code]}",
+                      expires_in: 12.hours) do
+      p "    req API "
+      response = self.class.get("/#{day}",
+                                query: {
+                                  base: @base_currency[:code]
+                                })
+      if response.code == 200
+        {
+          code: 200,
+          resp: response.parsed_response.symbolize_keys
+        }
+      end
     end
   end
 end

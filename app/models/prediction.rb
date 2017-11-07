@@ -19,21 +19,23 @@ class Prediction < CurrencyBase
       .where('target_currencies.code = ?', code)
   end
 
-  def self.from_predictor(predictor:, type:, days:, currency_pair:)
-    source = Currency.by_code(currency_pair[0]).last
-    target = Currency.by_code(currency_pair[1]).last
+  class << self
+    def from_predictor(predictor:, type:, days:, currency_pair:)
+      source = Currency.by_code(currency_pair[0]).last
+      target = Currency.by_code(currency_pair[1]).last
 
-    (Date.today..Date.today + days.days).each do |date|
-      rate = predictor.predict(date: date) / 100_000_000.to_f
-      if (existing = Prediction
-                 .where(source_currency: source, target_currency: target)
-                 .on(date).with_algo(type).last).present?
-        existing.update_attributes(rate: rate) if existing[:rate] != rate
-      else
-        Prediction.create(
-          source_currency: source, target_currency: target, date: date,
-          algo: type, rate: rate
-        )
+      (Date.today..Date.today + days.days).each do |date|
+        rate = predictor.predict(date: date) / 100_000_000.to_f
+        if (existing = Prediction
+                   .where(source_currency: source, target_currency: target)
+                   .on(date).with_algo(type).last).present?
+          existing.update_attributes(rate: rate) if existing[:rate] != rate
+        else
+          Prediction.create(
+            source_currency: source, target_currency: target, date: date,
+            algo: type, rate: rate
+          )
+        end
       end
     end
   end

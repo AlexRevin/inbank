@@ -3,6 +3,7 @@
 
 Rails.application.routes.draw do
   resources :calculators, only: [:index, :create]
+  resources :dynamic_calculators, only: [:index, :create]
   namespace :admin do
     resources :users
     root to: 'users#index'
